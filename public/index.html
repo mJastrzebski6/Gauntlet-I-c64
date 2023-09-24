@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="css/style.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <title>Gauntlet</title>
+  </head>
+  <body>
+    <div id="container">
+      <div id="all">
+        <div id="sideBar">
+          <div id="info">
+            <p>Controls:</p>
+            <ul>
+              <li>wsad - movement</li>
+              <li>space - fire</li>
+              <li>c - use clear potion</li>
+            </ul>
+          </div>
+          <br>
+          <div id="options">
+            <label>Character: &nbsp;</label>
+            <select id="characterSelect">
+              <option>Warrior</option>
+              <option>Valkyrie</option>
+              <option>Elf</option>
+              <option>Wizard</option>
+            </select>
+            <br>
+            <label>Map: &nbsp;</label>
+            <select id="mapSelect">
+              <option>8</option>
+              <option>16</option>
+              <option>test</option>
+              <option>test2</option>
+            </select>
+            <br>
+            <div id="startButtonDiv"></div>
+          </div>
+          <div id="credit">
+            Maciej Jastrzębski 3P1b 2022
+          </div>
+          
+        </div>
+        <canvas id="canvas"></canvas>
+      </div>
+    </div>
+    <script src="bundle.js"></script>
+  </body>
+</html>

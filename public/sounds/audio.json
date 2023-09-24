@@ -1,0 +1,77 @@
+{
+    "markers":{
+        "weaponThrew": {
+            "start": 0,
+            "duration": 0.168,
+            "volume": 1,
+            "loop": 0
+        },
+        "enteringExit": {
+            "start": 0.168, 
+            "duration": 1.296,
+            "volume": 1,
+            "loop": 0
+        },
+        "startLevel": {
+            "start": 1.464, 
+            "duration": 0.600,
+            "volume": 1,
+            "loop": 0
+        },
+        "openDoors": {
+            "start": 2.064, 
+            "duration": 0.792,
+            "volume": 1,
+            "loop": 0
+        },
+        "destroyBottle": {
+            "start": 2.856, 
+            "duration": 0.576,
+            "volume": 1,
+            "loop": 0
+        },
+        "pickedAbility": {
+            "start": 3.432, 
+            "duration": 0.912,
+            "volume": 1,
+            "loop": 0
+        },
+        "pickedItem": {
+            "start": 4.344, 
+            "duration": 0.240,
+            "volume": 1,
+            "loop": 0
+        },
+        "pickedKey": {
+            "start": 4.584, 
+            "duration": 0.744,
+            "volume": 1,
+            "loop": 0
+        },
+        "gotHitByGhost": {
+            "start": 5.328, 
+            "duration": 0.288,
+            "volume": 1,
+            "loop": 0
+        },
+        "gotHitByGruntDemon": {
+            "start": 5.616, 
+            "duration": 0.216,
+            "volume": 1,
+            "loop": 0
+        },
+        "levelTitle": {
+            "start": 5.832, 
+            "duration": 4.032,
+            "volume": 1,
+            "loop": 0
+        },
+        "gotHitByDeath": {
+            "start": 9.864, 
+            "duration": 0.198,
+            "volume": 1,
+            "loop": 0
+        }
+    }
+
+}

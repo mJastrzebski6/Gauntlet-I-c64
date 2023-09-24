@@ -1,0 +1,69 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+}
+
+#container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#canvas {
+  width: 1285px;
+  height: 960px;
+}
+
+#sideBar{
+  width: 320px;
+  color: #00ffff;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+#all{
+  height: 960px;
+  display: flex;
+}
+
+#info{
+  height: 160px;
+}
+#options{
+  height: 150px;
+}
+
+#credit{
+  vertical-align: bottom;
+  font-size: 20px;
+  text-align: center;
+  display: table-cell;
+  height: 570px;
+  width: 300px;
+}
+
+p{
+  margin: 0;
+  padding: 0;
+}
+
+ul{
+  margin: 0;
+}
+
+select{
+  border-radius: 0;
+  background-color: white;
+  border: none;
+  padding: 5px 10px;
+}
+button{
+  border-radius: 0;
+  background-color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}

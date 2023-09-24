@@ -1,0 +1,18 @@
+{
+  "width": 5,
+  "height": 5,
+  "array": [
+    [9, 13, 13, 13, 10],
+    [14, 0, 0, 33, 14],
+    [14, 0, 0, 32, 14],
+    [14, 34, 27, 29, 14],
+    [12, 13, 13, 13, 11]
+  ],
+  "startHealth": 2000,
+  "startScore": 0,
+  "levelNumber": 0,
+  "wallsColor": "#79d570",
+  "characterStartCoords": [1, 1],
+  "wallsType": 2,
+  "portals": [[[1,2],[1,5]]]
+}

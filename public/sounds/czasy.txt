@@ -1,0 +1,59 @@
+weaponThrew:
+    od: 0
+    do: 0.168
+    czas trwania: 0.168
+
+enteringExit:
+    od: 0.168
+    do: 1.464
+    czas trwania: 1.296
+
+startLevel:
+    od: 1.464
+    do: 2.064
+    czas trwania: 0.600
+
+openDoors:
+    od: 2.064
+    do: 2.856
+    czas trwania: 0.792
+
+destroyBottle:
+    od: 2.856
+    do: 3.432
+    czas trwania: 0.576
+
+pickedAbility:
+    od: 3.432
+    do: 4.344
+    czas trwania: 0.912
+
+pickedItem:
+    od: 4.344
+    do: 4.584
+    czas trwania: 0.240
+
+pickedKey:
+    od: 4.584
+    do: 5.328
+    czas trwania: 0.744
+
+gotHitByGhost:
+    od: 5.328
+    do: 5.616
+    czas trwania: 0.288
+
+gotHitByGruntDemon:
+    od: 5.616
+    do: 5.832
+    czas trwania: 0.216
+
+levelTitle:
+    od: 5.832
+    do: 9.864
+    czas trwania: 4.032
+
+gotHitByDeath:
+   od: 9.864
+   do: 10.062
+   czas trwania: 0.198
