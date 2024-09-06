@@ -3,7 +3,7 @@ import Images from './Images';
 import Helpers from './Helpers';
 import Sorcerer from './Monsters/Sorcerer';
 import Demon from './Monsters/Demon';
-import { Constants } from './Consts';
+import { blockCodes, Constants } from './Consts';
 import Game from './Game';
 import Monster from './Monsters/Monster';
 
@@ -96,6 +96,7 @@ class Canvas {
 
         this.drawWalls()
         this.drawItems();
+        this.drawSpecialItems()
         Game.gameMap.moveMonsters()
         MainCharacter.animateCharacter();
         
@@ -154,6 +155,27 @@ class Canvas {
                     Images.assets.items,
                     ((Game.gameMap.map?.[startIndexes.y*2 + j*2]?.[startIndexes.x*2 +i*2]-19)*17)-17,
                     0,
+                    16,
+                    16,
+                    -this.renderedViewX%80 + i*80,
+                    -this.renderedViewY%80 + j*80,
+                    16*this.multiplier,
+                    16*this.multiplier
+                );
+            }
+        }
+    }
+
+    drawSpecialItems(){
+        const startIndexes = Helpers.getStartIndexes();
+
+        for(let i:number=0; i<17; i++){
+            for (let j:number = 0; j<11; j++){
+                if(Game.gameMap.map?.[startIndexes.y*2 + j*2]?.[startIndexes.x*2 +i*2]>47 || Game.gameMap.map?.[startIndexes.y*2 + j*2]?.[startIndexes.x*2 +i*2]<39) continue
+                this.ctx.drawImage(
+                    Images.assets.specialItems,
+                    ((Game.gameMap.map?.[startIndexes.y*2 + j*2]?.[startIndexes.x*2 +i*2]-39)/3)*17,
+                    Game.gameMap.animationFrameIndex*17,
                     16,
                     16,
                     -this.renderedViewX%80 + i*80,
@@ -277,19 +299,19 @@ class Canvas {
     drawItemsAndAbilities(){
         MainCharacter.ownedAbilities.forEach(ability => {
             switch (ability){
-                case 37: // lightblue elixir
+                case blockCodes.fightPowerPotion: // lightblue elixir
                     this.drawIcon(14, 610, 160)
                     break;
-                case 38: // green elixir
+                case blockCodes.magicPowerPotion: // green elixir
                     this.drawIcon(12, 121, 160)
                     break;
-                case 39: // yellow elixir
+                case blockCodes.extraArmourPotion: // yellow elixir
                     this.drawIcon(10, 41, 160)
                     break;
-                case 40: // purple elixir
+                case blockCodes.extraCarryingAbilityPotion: // purple elixir
                     this.drawIcon(11, 81, 160)
                     break;
-                case 41: // brown elixir
+                case blockCodes.extraShotPower: // brown elixir
                     this.drawIcon(13, 530, 160)
                     break;
             }

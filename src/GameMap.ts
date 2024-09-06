@@ -13,6 +13,7 @@ import KeyboardEvents from "./KeyboardEvents";
 import Images from "./Images";
 import cSoundManager from "./SoundsHandler";
 import Game from "./Game";
+import { blockCodes } from "./Consts";
 
 export default class GameMap{
     map: number[][] = [[]];
@@ -21,7 +22,8 @@ export default class GameMap{
     numberOfYBlocks: number = 0;
     xSizeInPixels: number = 0;
     ySizeInPixels: number = 0;
-    universalBoxFrameIndex: number = 0
+    universalFrameIndex: number = 0
+    animationFrameIndex: number = 0
     universalMonstersFrameIndex: number = 1
     arrayOfMonsters: (Ghost|Grunt|Demon|Death|Sorcerer)[] = []
     arrayOfGoblins: Goblin[] = []
@@ -95,7 +97,7 @@ export default class GameMap{
                     const itemNumber = this.createSpawner(cellIndex, rowIndex, cell);
                     doubledRow.push(itemNumber, itemNumber)
                 }
-                else if(cell >= 70 && cell <=78){
+                else if(blockCodes.spawners.includes(cell)){
                     const itemNumber = this.createSpawner(cellIndex, rowIndex, cell);
                     doubledRow.push(itemNumber, itemNumber)
                 }
@@ -179,16 +181,14 @@ export default class GameMap{
 
     setIntervals(){
         this.animateSpritesInterval = setInterval(() => {
-            const startIndexes = Helpers.getStartIndexes();
+            if(this.universalFrameIndex == 0) this.animationFrameIndex=1
+            if(this.universalFrameIndex == 1) this.animationFrameIndex=2
+            if(this.universalFrameIndex == 2) this.animationFrameIndex=1
+            if(this.universalFrameIndex == 3) this.animationFrameIndex=0
+            this.universalFrameIndex++;
 
-            for(let i:number=0; i<17; i++){
-                for (let j:number = 0; j<11; j++){
-                    if([26,27,28].includes(this.map?.[startIndexes.y*2 + j*2]?.[startIndexes.x*2 +i*2])) this.map[startIndexes.y*2 + j*2][startIndexes.x*2 +i*2] = 26+this.universalBoxFrameIndex
-                    if([42,43,44].includes(this.map?.[startIndexes.y*2 + j*2]?.[startIndexes.x*2 +i*2])) this.map[startIndexes.y*2 + j*2][startIndexes.x*2 +i*2] = 42+this.universalBoxFrameIndex
-                }
-            }
-            this.universalBoxFrameIndex++;
-            if(this.universalBoxFrameIndex == 3) this.universalBoxFrameIndex=0
+            if(this.universalFrameIndex == 4) this.universalFrameIndex =0
+
 
             if(this.universalMonstersFrameIndex == 1) this.universalMonstersFrameIndex = 3
             else if(this.universalMonstersFrameIndex == 3) this.universalMonstersFrameIndex = 2
@@ -477,6 +477,13 @@ export default class GameMap{
                 returnItemIndex -=53;
                 //sorcerer
                 break;
+            case 79:
+            case 80:
+            case 81:
+                this.arrayOfSpawners.push(new Spawner(x*2,y*2, 4))
+                returnItemIndex -=56;
+                //lobber
+                break;
         }
         return returnItemIndex;
     }
@@ -568,7 +575,7 @@ export default class GameMap{
     }
 
     findGlass(x: number, y:number){
-        if(Game.gameMap.map[y][x] === 30 || Game.gameMap.map[y][x] === 31){
+        if(blockCodes.glass.includes(Game.gameMap.map[y][x])){
 
             Game.gameMap.map[y][x] = 0
             Game.gameMap.map[y+1][x] = 0

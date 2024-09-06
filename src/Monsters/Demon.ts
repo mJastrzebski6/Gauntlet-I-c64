@@ -2,7 +2,7 @@ import Coordinates, { Directions } from "../Interfaces";
 import Monster from "./Monster";
 import Canvas from "../Canvas";
 import Images from "../Images";
-import { Constants, TypesOfBlocks } from "../Consts";
+import { Constants, blockGroups } from "../Consts";
 import MainCharacter from "../MainCharacter";
 import Game from "../Game";
 
@@ -90,9 +90,9 @@ export default class Demon extends Monster{
 
         const fireballCoordsArray = MainCharacter.getCoordinates4(this.fireballCoords.x+20, this.fireballCoords.y+20);
 
-        if(TypesOfBlocks.noTransitionForProjectile.includes(Game.gameMap.map?.[fireballCoordsArray[1]*2]?.[fireballCoordsArray[0]*2])) this.fireballThrew = false
+        if(blockGroups.noTransitionForProjectile.includes(Game.gameMap.map?.[fireballCoordsArray[1]*2]?.[fireballCoordsArray[0]*2])) this.fireballThrew = false
 
-        if(TypesOfBlocks.monsters.includes(Game.gameMap.map?.[fireballCoordsArray[1]*2]?.[fireballCoordsArray[0]*2])){
+        if(blockGroups.monsters.includes(Game.gameMap.map?.[fireballCoordsArray[1]*2]?.[fireballCoordsArray[0]*2])){
             
             let killed: boolean = false;
 
@@ -138,13 +138,12 @@ export default class Demon extends Monster{
         
         }
             
-        if(TypesOfBlocks.destroyableByDemons.includes(Game.gameMap.map?.[fireballCoordsArray[1]*2]?.[fireballCoordsArray[0]*2])){
+        if(blockGroups.destroyableByDemons.includes(Game.gameMap.map?.[fireballCoordsArray[1]*2]?.[fireballCoordsArray[0]*2])){
             MainCharacter.destroyThing(fireballCoordsArray, false);
             this.fireballThrew = false;
         }
 
         if(Game.gameMap.map?.[fireballCoordsArray[1]*2]?.[fireballCoordsArray[0]*2] === -1){
-           // console.log("me hit")
             MainCharacter.changeHealth(-5);
             this.fireballThrew = false;
         }

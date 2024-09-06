@@ -5,6 +5,7 @@ interface Assets {
     bigNumbers: HTMLImageElement;
     bottomBar: HTMLImageElement;
     items: HTMLImageElement;
+    specialItems: HTMLImageElement;
     levelTitleScreen: HTMLImageElement;
     mainCharacters: HTMLImageElement ;
     monsters: HTMLImageElement;
@@ -25,10 +26,11 @@ class Images {
     }
 
     async loadImages() {
-        const [abilityTexts, bigNumbers, items, levelTitleScreen, mainCharacters, monsters, numbers, pickUpAbilityScreen, startScreen, walls,wallsOrigin, weapons] = await Promise.all([
+        const [abilityTexts, bigNumbers, items, specialItems, levelTitleScreen, mainCharacters, monsters, numbers, pickUpAbilityScreen, startScreen, walls,wallsOrigin, weapons] = await Promise.all([
             this.imageLoader("abilityTexts.png"),
             this.imageLoader("bigNumbers.png"),
             this.imageLoader("items.png"),
+            this.imageLoader("specialItems.png"),
             this.imageLoader("levelTitleScreen.png"),
             this.imageLoader("mainCharacters.png"),
             this.imageLoader("monsters.png"),
@@ -44,6 +46,7 @@ class Images {
             abilityTexts,
             bigNumbers,
             items,
+            specialItems,
             levelTitleScreen,
             mainCharacters,
             monsters,

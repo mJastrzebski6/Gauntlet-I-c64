@@ -1,7 +1,7 @@
 import Canvas from "./Canvas";
 import KeyboardEvents from "./KeyboardEvents";
 import Projectile from "./Projectile";
-import {TypesOfBlocks} from './Consts'
+import {blockCodes, blockGroups} from './Consts'
 import cSoundManager from "./SoundsHandler";
 import Sorcerer from "./Monsters/Sorcerer";
 import Monster from "./Monsters/Monster";
@@ -64,11 +64,11 @@ class MainCharacter{
 
         const ProjectileCoords = this.getCoordinates4(this.weapon.xPosition+20, this.weapon.yPosition+20)
 
-        if(TypesOfBlocks.noTransitionForProjectile.includes(Game.gameMap.map?.[ProjectileCoords[1]*2]?.[ProjectileCoords[0]*2])) this.weapon.thrown = false
+        if(blockGroups.noTransitionForProjectile.includes(Game.gameMap.map?.[ProjectileCoords[1]*2]?.[ProjectileCoords[0]*2])) this.weapon.thrown = false
 
         let invisibleSorcererHit = false;
 
-        if(TypesOfBlocks.monsters.includes(Game.gameMap.map?.[ProjectileCoords[1]*2]?.[ProjectileCoords[0]*2])){
+        if(blockGroups.monsters.includes(Game.gameMap.map?.[ProjectileCoords[1]*2]?.[ProjectileCoords[0]*2])){
             let killed: boolean = false;
 
             Game.gameMap.arrayOfMonsters = Game.gameMap.arrayOfMonsters.filter((monster: Monster)=>{
@@ -118,7 +118,7 @@ class MainCharacter{
             if(invisibleSorcererHit === false) this.weapon.thrown = false
         }
         
-        if(TypesOfBlocks.destroyableThings.includes(Game.gameMap.map?.[ProjectileCoords[1]*2]?.[ProjectileCoords[0]*2])){
+        if(blockGroups.destroyableThings.includes(Game.gameMap.map?.[ProjectileCoords[1]*2]?.[ProjectileCoords[0]*2])){
             this.destroyThing(ProjectileCoords,true)
             this.weapon.thrown = false
         }
@@ -313,10 +313,10 @@ class MainCharacter{
                 Game.gameMap.clearBlock2(this.coordsArrayIndexes)
                 this.coordsArrayIndexes = this.getCoordinates3(this.xCoord, this.yCoord)
                 
-                if(Game.gameMap.map[this.coordsArrayIndexes[1]][this.coordsArrayIndexes[0]] === 29){
+                if(Game.gameMap.map[this.coordsArrayIndexes[1]][this.coordsArrayIndexes[0]] === blockCodes.exit){
                     Game.gameMap.endOfLevel()
                 }
-                else if([42,43,44].includes(Game.gameMap.map[this.coordsArrayIndexes[1]][this.coordsArrayIndexes[0]])){
+                else if(blockCodes.portals.includes(Game.gameMap.map[this.coordsArrayIndexes[1]][this.coordsArrayIndexes[0]])){
                     Game.gameMap.teleport()
                 }
                 else Game.gameMap.setBlock2(this.coordsArrayIndexes, -1)
@@ -381,7 +381,7 @@ class MainCharacter{
     checkForPickingItems(){
         const Coords = this.getCoordinates(this.xCoord, this.yCoord)
         const itemIndex = Game.gameMap.map?.[Coords[1]*2]?.[Coords[0]*2]
-        if(TypesOfBlocks.pickableItems.includes(itemIndex)) this.pickItem(itemIndex, Coords);
+        if(blockGroups.pickableItems.includes(itemIndex)) this.pickItem(itemIndex, Coords);
     }
 
     isFieldClear(y:number, x:number){
@@ -393,18 +393,18 @@ class MainCharacter{
         ) return false
 
         if(
-            (Game.gameMap.map?.[y*2]?.[x*2] == 30) &&
-            (Game.gameMap.map?.[y*2+1]?.[x*2] == 30) &&
-            (Game.gameMap.map?.[y*2]?.[x*2+1] == 30) &&
-            (Game.gameMap.map?.[y*2+1]?.[x*2+1] == 30) &&
+            (blockCodes.glass.includes(Game.gameMap.map?.[y*2]?.[x*2])) &&
+            (blockCodes.glass.includes(Game.gameMap.map?.[y*2+1]?.[x*2])) &&
+            (blockCodes.glass.includes(Game.gameMap.map?.[y*2]?.[x*2+1])) &&
+            (blockCodes.glass.includes(Game.gameMap.map?.[y*2+1]?.[x*2+1])) &&
             this.keys == 0         
         ) return false
 
         if(
-            (Game.gameMap.map?.[y*2]?.[x*2] == 31) &&
-            (Game.gameMap.map?.[y*2+1]?.[x*2] == 31) &&
-            (Game.gameMap.map?.[y*2]?.[x*2+1] == 31) &&
-            (Game.gameMap.map?.[y*2+1]?.[x*2+1] == 31) &&
+            (blockCodes.glass.includes(Game.gameMap.map?.[y*2]?.[x*2])) &&
+            (blockCodes.glass.includes(Game.gameMap.map?.[y*2+1]?.[x*2])) &&
+            (blockCodes.glass.includes(Game.gameMap.map?.[y*2]?.[x*2+1] )) &&
+            (blockCodes.glass.includes(Game.gameMap.map?.[y*2+1]?.[x*2+1])) &&
             this.keys == 0         
         ) return false
 
@@ -491,44 +491,44 @@ class MainCharacter{
         const itemID = Game.gameMap.map[coords[1]*2][coords[0]*2];
 
         switch(itemID){
-            case 16:
-                Game.gameMap.setBlock(coords, 17)
+            case 1: //destructible wall 1
+                Game.gameMap.setBlock(coords, 2)
                 break;
-            case 17:
-                Game.gameMap.setBlock(coords, 18)
+            case 2: //destructible wall 2
+                Game.gameMap.setBlock(coords, 3)
                 break;
-            case 18:
+            case 3: //destructible wall 3
                 Game.gameMap.clearBlock(coords)
                 break;
-            case 20:
+            case 20: //small ghost spawner
             case 21:
                 Game.gameMap.clearBlock(coords)
                 Game.gameMap.deleteSpawner(coords);
                 if(addScore) this.changeScore(10);
                 break;
-            case 22:
+            case 22: //big ghost spawner
                 Game.gameMap.setBlock(coords, 20)
                 if(addScore) this.changeScore(10);
                 break;
-            case 23:
+            case 23: //small triple spawner
                 Game.gameMap.setBlock(coords, 25)
                 if(addScore) this.changeScore(10);
                 break;
-            case 24:
+            case 24:  //big triple spawner
             case 25:
                 Game.gameMap.clearBlock(coords)
                 Game.gameMap.deleteSpawner(coords);
                 if(addScore) this.changeScore(10);
                 break;
-            case 33:
+            case 32:
+            case 34:
+            case 35:
+            case 36:
             case 37:
             case 38:
-            case 39:
-            case 40:
-            case 41:
                 Game.gameMap.clearBlock(coords)
                 break;
-            case 36:
+            case 33:
                 Game.gameMap.clearBlock(coords)
                 Game.gameMap.clearMapFromMonstersAndSpawners(false)
                 break;
@@ -537,46 +537,46 @@ class MainCharacter{
 
     pickItem(itemIndex:number , coords:number[]){
         switch(itemIndex){
-            case 26: //box - treasure
-            case 27: //box - treasure
-            case 28: //box - treasure
+            case 39: //box - treasure
+            case 40: //box - treasure
+            case 41: //box - treasure
                 this.changeScore(100);
                 cSoundManager.play("pickedItem");
                 break;
-            case 32: // key
+            case blockCodes.key: // key
                 this.keys++
                 this.changeScore(100);
                 cSoundManager.play("pickedKey");
                 break;
-            case 33: //yellow bottle - cider
+            case blockCodes.yellowBottle: //yellow bottle - cider
                 this.changeHealth(100);
                 this.changeScore(100);
                 cSoundManager.play("pickedItem");
                 break;
-            case 34: //food
+            case blockCodes.meat: //food
                 this.changeScore(100);
                 this.changeHealth(100);
                 cSoundManager.play("pickedItem");
                 break;
-            case 35: //amulet
+            case blockCodes.medallion: //amulet
                 this.changeScore(100);
                 cSoundManager.play("pickedItem");
                 break;
-            case 36: // blue elixir
+            case blockCodes.magicPotion: // blue elixir
                 this.potions++
                 this.changeScore(100);
                 cSoundManager.play("pickedItem");
                 break;
-            case 37: // lightblue elixir = fight power
-            case 38: // green elixir     = magic power
-            case 39: // yellow elixir    = extra armor
-            case 40: // purple elixir    = carrying ability
-            case 41: // brown elixir     = shot power
+            case blockCodes.fightPowerPotion:           // lightblue elixir = fight power
+            case blockCodes.magicPowerPotion:           // green elixir     = magic power
+            case blockCodes.extraArmourPotion:          // yellow elixir    = extra armor
+            case blockCodes.extraCarryingAbilityPotion: // purple elixir    = carrying ability
+            case blockCodes.extraShotPower:             // brown elixir     = shot power
                 if(!this.ownedAbilities.includes(itemIndex)) this.ownedAbilities.push(itemIndex);
-                Game.gameMap.pickingUpAbility(itemIndex-37)
+                Game.gameMap.pickingUpAbility(itemIndex-34)
                 break;
-            case 30:
-            case 31:
+            case 27:
+            case 28:
                 this.keys--;
                 Game.gameMap.findGlass(coords[0]*2, coords[1]*2);
                 cSoundManager.play("openDoors")

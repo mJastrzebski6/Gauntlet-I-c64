@@ -12,8 +12,6 @@ class Loader{
     }
 
     async loadUtilities(){
-
-        //check if images and audio files are ready and add listeners
         await Images.loadImages()
         await SoundsHandler.initializeSoundManager()
         await KeyboardEvents.addListeners()
