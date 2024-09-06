@@ -72,6 +72,7 @@ export default class GameMap{
 
         this.portals = loadedData.portalsCoords
 
+
         this.xSizeInPixels = this.numberOfXBlocks * 16 * Canvas.multiplier;
         this.ySizeInPixels = this.numberOfYBlocks * 16 * Canvas.multiplier;
 
