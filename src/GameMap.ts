@@ -64,9 +64,9 @@ export default class GameMap{
             this.createMonster(monster.x, monster.y, monster.id)
         })
 
-        MainCharacter.xCoord = loadedData.characterStartCoords[0] * 16 * Canvas.multiplier;
-        MainCharacter.yCoord = loadedData.characterStartCoords[1] * 16 * Canvas.multiplier;
-        MainCharacter.coordsArrayIndexes = [loadedData.characterStartCoords[0]*2, loadedData.characterStartCoords[1]*2]
+        MainCharacter.xCoord = loadedData.characterStartCoords[1] * 16 * Canvas.multiplier;
+        MainCharacter.yCoord = loadedData.characterStartCoords[0] * 16 * Canvas.multiplier;
+        MainCharacter.coordsArrayIndexes = [loadedData.characterStartCoords[1]*2, loadedData.characterStartCoords[0]*2]
         Game.gameMap.setBlock2(MainCharacter.coordsArrayIndexes, -1)
 
         this.numberOfXBlocks = loadedData.width;
