@@ -2,7 +2,7 @@
 
 Remake of c64 game in the browser
 
-[Hosted Game](http://http://chemik.ct8.pl/gauntlet_c64_game/)
+[Hosted Game](http://chemik.ct8.pl/gauntlet_c64_game/)
 
 ## Controls:
 - wsad: movement
