@@ -30,10 +30,11 @@ export default class GameMap{
     arrayOfSpawners: Spawner[] = []
     stopGame: boolean = false;
     moveMonstersTimestamp: number = 0;
-    arrayOfMonstersToCreate: {x:number, y:number, id:number}[] = []
+    arrayOfMonstersToCreate: {x:number, y:number, id:number}[] = [];
     spawningMonstersInterval: NodeJS.Timeout | null = null;
     animateSpritesInterval: NodeJS.Timeout | null = null;
-    portals:number[][] = []
+    portals:number[][] = [];
+    passages: [number, number, [number, number][]][]= [];
 
     async clearMap(){
         this.map = [[]]
@@ -64,16 +65,16 @@ export default class GameMap{
             this.createMonster(monster.x, monster.y, monster.id)
         })
 
-        MainCharacter.xCoord = loadedData.characterStartCoords[1] * 16 * Canvas.multiplier;
-        MainCharacter.yCoord = loadedData.characterStartCoords[0] * 16 * Canvas.multiplier;
-        MainCharacter.coordsArrayIndexes = [loadedData.characterStartCoords[1]*2, loadedData.characterStartCoords[0]*2]
+        MainCharacter.xCoord = loadedData.characterStartCoords[0] * 16 * Canvas.multiplier;
+        MainCharacter.yCoord = loadedData.characterStartCoords[1] * 16 * Canvas.multiplier;
+        MainCharacter.coordsArrayIndexes = [loadedData.characterStartCoords[0]*2, loadedData.characterStartCoords[1]*2]
         Game.gameMap.setBlock2(MainCharacter.coordsArrayIndexes, -1)
 
         this.numberOfXBlocks = loadedData.width;
         this.numberOfYBlocks = loadedData.height;
 
         this.portals = loadedData.portalsCoords
-
+        this.passages = loadedData.passagesCoords
 
         this.xSizeInPixels = this.numberOfXBlocks * 16 * Canvas.multiplier;
         this.ySizeInPixels = this.numberOfYBlocks * 16 * Canvas.multiplier;
@@ -252,6 +253,14 @@ export default class GameMap{
             }
             else if(monster.sourceColumn === 5){
                 MainCharacter.changeHealth(-1)
+                if (monster instanceof Death) {
+                    monster.healthSuckedOutOfPlayer++;
+                    console.log("health sucked",monster.healthSuckedOutOfPlayer)
+                    if (monster.healthSuckedOutOfPlayer >= 170) {
+                      monster.die(false);
+                      return false;
+                    }
+                }
                 cSoundManager.play("gotHitByDeath")
                 return true;
             }
@@ -590,7 +599,6 @@ export default class GameMap{
         else return
     }
     teleport(){
-        console.log("teleport");
         this.portals.forEach((portal, index)=>{
             if(
                 portal[0] != MainCharacter.coordsArrayIndexes[0]/2 ||
@@ -606,26 +614,6 @@ export default class GameMap{
             MainCharacter.yCoord = res[1]/2* 16 * Canvas.multiplier
             Game.gameMap.setBlock2(MainCharacter.coordsArrayIndexes, -1)
             MainCharacter.moveMap()
-
-            // portalConnection.forEach((portal, index2)=>{
-            //     if(
-            //         portal[0] != MainCharacter.coordsArrayIndexes[0]/2 ||
-            //         portal[1] != MainCharacter.coordsArrayIndexes[1]/2
-            //     ) return
-
-            //     let targetPortalCoords;
-            //     if(index2 == 0) targetPortalCoords = portalConnection[1]
-            //     else targetPortalCoords = portalConnection[0]
-                
-            //     let res = this.findPlaceToTeleport([targetPortalCoords[0]*2, targetPortalCoords[1]*2])
-            //     if(res === null) return
-            //     MainCharacter.coordsArrayIndexes = [res[0], res[1]]
-            //     Game.gameMap.setBlock2(MainCharacter.coordsArrayIndexes, 0)
-            //     MainCharacter.xCoord = res[0]/2* 16 * Canvas.multiplier
-            //     MainCharacter.yCoord = res[1]/2* 16 * Canvas.multiplier
-            //     Game.gameMap.setBlock2(MainCharacter.coordsArrayIndexes, -1)
-            //     MainCharacter.moveMap()
-            // })
         })
     }
 
@@ -635,5 +623,45 @@ export default class GameMap{
         else if(this.isFieldClear(coords[0]-2,coords[1])) return [coords[0]-2, coords[1]]
         else if(this.isFieldClear(coords[0],coords[1]-2)) return [coords[0], coords[1]-2]
         else return null
+    }
+
+    disappearWalls(){
+        this.passages.forEach((passage, index)=> {
+            if(
+                passage[0] != MainCharacter.coordsArrayIndexes[0]/2 ||
+                passage[1] != MainCharacter.coordsArrayIndexes[1]/2
+            ) return
+
+            passage[2].forEach((blockCoords, index)=>{
+                Game.gameMap.setBlock(blockCoords, 0)
+            })
+        })
+        this.fixWalls()
+    }
+    fixWalls(){
+        for(let i:number=0; i<this.numberOfYBlocks*2; i=i+2){
+            for (let j:number = 0; j<this.numberOfXBlocks*2; j=j+2){
+                if(Game.gameMap.map?.[j]?.[i]>=4 && Game.gameMap.map?.[j]?.[i]<=19){
+
+                         if(!blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 4) {this.setBlock2([i,j], 4); }  
+                    else if( blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 5) {this.setBlock2([i,j], 5); }  
+                    else if(!blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 6) {this.setBlock2([i,j], 6); }  
+                    else if(!blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 7) {this.setBlock2([i,j], 7); }  
+                    else if(!blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 8) {this.setBlock2([i,j], 8); }  
+                    else if(!blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 9) {this.setBlock2([i,j], 9); }  
+                    else if(!blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 10) {this.setBlock2([i,j], 10); }  
+                    else if( blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 11) {this.setBlock2([i,j], 11); }  
+                    else if( blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 12) {this.setBlock2([i,j], 12); }  
+                    else if(!blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 13) {this.setBlock2([i,j], 13); }  
+                    else if( blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 14) {this.setBlock2([i,j], 14); }  
+                    else if( blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 15) {this.setBlock2([i,j], 15); }  
+                    else if( blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 16) {this.setBlock2([i,j], 16); }  
+                    else if(!blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 17) {this.setBlock2([i,j], 17); }  
+                    else if( blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) && !blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 18) {this.setBlock2([i,j], 18); }  
+                    else if( blockCodes.indestructibleWalls.includes(this.map?.[j-2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j+2]?.[i]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i-2]) &&  blockCodes.indestructibleWalls.includes(this.map?.[j]?.[i+2]) && this.map[j][i] !== 19) {this.setBlock2([i,j], 19); }  
+    
+                }    
+            }
+        }    
     }
 }

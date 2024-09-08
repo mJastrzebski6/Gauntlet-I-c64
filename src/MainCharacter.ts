@@ -319,6 +319,10 @@ class MainCharacter{
                 else if(blockCodes.portals.includes(Game.gameMap.map[this.coordsArrayIndexes[1]][this.coordsArrayIndexes[0]])){
                     Game.gameMap.teleport()
                 }
+                else if(blockCodes.passages.includes(Game.gameMap.map[this.coordsArrayIndexes[1]][this.coordsArrayIndexes[0]])){
+                    Game.gameMap.disappearWalls()
+                    Game.gameMap.setBlock2(this.coordsArrayIndexes, -1)
+                }
                 else Game.gameMap.setBlock2(this.coordsArrayIndexes, -1)
                
             }

@@ -373,7 +373,6 @@ class Canvas {
     }
 
     animateEnding(){
-        console.log('animate ending')
         this.oldTime = this.newTime
         this.newTime = Date.now();
         this.deltaTime = (this.newTime-this.oldTime)
